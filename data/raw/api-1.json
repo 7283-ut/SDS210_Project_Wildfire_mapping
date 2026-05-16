@@ -1,0 +1,1878 @@
+{
+  "components": {
+    "responses": {},
+    "schemas": {
+      "EmailConfig": {
+        "description": "Email is automatically set from user's registered email",
+        "properties": {
+          "email": {
+            "format": "email",
+            "type": "string"
+          }
+        },
+        "title": "EmailConfig",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "description": "Standard error response",
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "description": "Error code",
+                "example": "not_found",
+                "type": "string"
+              },
+              "message": {
+                "description": "Error message",
+                "example": "Resource not found",
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "Fire": {
+        "description": "A fire detection from NASA FIRMS satellite data",
+        "example": {
+          "confidence": "h",
+          "detected_at": "2025-01-15T14:23:00Z",
+          "frp": 15.3,
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "satellite": "NOAA-21"
+        },
+        "properties": {
+          "confidence": {
+            "description": "Detection confidence (l=low, n=nominal, h=high)",
+            "enum": [
+              "l",
+              "n",
+              "h"
+            ],
+            "example": "h",
+            "type": "string"
+          },
+          "detected_at": {
+            "description": "Detection timestamp",
+            "example": "2025-01-15T14:23:00Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "frp": {
+            "description": "Fire Radiative Power in MW",
+            "example": 15.3,
+            "format": "float",
+            "type": "number"
+          },
+          "latitude": {
+            "description": "Fire latitude",
+            "example": 40.7128,
+            "format": "float",
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Fire longitude",
+            "example": -74.006,
+            "format": "float",
+            "type": "number"
+          },
+          "satellite": {
+            "description": "Satellite name",
+            "example": "NOAA-21",
+            "type": "string"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude",
+          "detected_at",
+          "confidence",
+          "satellite"
+        ],
+        "title": "Fire",
+        "type": "object"
+      },
+      "Location": {
+        "description": "A geographic location monitored for fire activity",
+        "example": {
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "name": "Home",
+          "radius": 5000
+        },
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "format": "uuid",
+            "type": "string"
+          },
+          "latitude": {
+            "description": "Latitude in decimal degrees",
+            "example": 40.7128,
+            "format": "float",
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Longitude in decimal degrees",
+            "example": -74.006,
+            "format": "float",
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "name": {
+            "description": "Human-readable name",
+            "example": "Home",
+            "type": "string"
+          },
+          "radius": {
+            "description": "Monitoring radius in meters",
+            "example": 5000,
+            "maximum": 100000,
+            "minimum": 100,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "latitude",
+          "longitude",
+          "radius"
+        ],
+        "title": "Location",
+        "type": "object"
+      },
+      "LocationFiresResponse": {
+        "description": "Response containing fire detections near a location with location metadata",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Fire"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "properties": {
+              "count": {
+                "description": "Number of fires returned",
+                "type": "integer"
+              },
+              "hours": {
+                "description": "Time window in hours",
+                "type": "integer"
+              },
+              "location": {
+                "properties": {
+                  "id": {
+                    "description": "Location ID",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Location name",
+                    "type": "string"
+                  },
+                  "radius": {
+                    "description": "Location radius in meters",
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "LocationFiresResponse",
+        "type": "object"
+      },
+      "LocationListResponse": {
+        "description": "Response containing a list of locations",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "LocationListResponse",
+        "type": "object"
+      },
+      "LocationRequest": {
+        "description": "Location creation/update request",
+        "example": {
+          "latitude": 40.7128,
+          "longitude": -74.006,
+          "name": "My Location",
+          "radius": 5000
+        },
+        "properties": {
+          "latitude": {
+            "description": "Latitude",
+            "example": 40.7128,
+            "format": "float",
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Longitude",
+            "example": -74.006,
+            "format": "float",
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "name": {
+            "description": "Location name",
+            "example": "My Location",
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "radius": {
+            "description": "Radius in meters",
+            "example": 5000,
+            "maximum": 50000,
+            "minimum": 1000,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "latitude",
+          "longitude",
+          "radius"
+        ],
+        "title": "LocationRequest",
+        "type": "object"
+      },
+      "LocationResponse": {
+        "description": "Response containing a single location",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Location"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "LocationResponse",
+        "type": "object"
+      },
+      "NearbyFiresResponse": {
+        "description": "Response containing fire detections near specified coordinates",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Fire"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "properties": {
+              "count": {
+                "description": "Number of fires returned",
+                "type": "integer"
+              },
+              "hours": {
+                "description": "Time window in hours",
+                "type": "integer"
+              },
+              "search_area": {
+                "properties": {
+                  "latitude": {
+                    "description": "Search latitude",
+                    "format": "float",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "description": "Search longitude",
+                    "format": "float",
+                    "type": "number"
+                  },
+                  "radius": {
+                    "description": "Search radius in meters",
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "NearbyFiresResponse",
+        "type": "object"
+      },
+      "NotificationDevice": {
+        "description": "A device or method for receiving fire notifications",
+        "example": {
+          "active": true,
+          "channel": "web_push",
+          "config": {
+            "endpoint": "https://fcm.googleapis.com/fcm/send/abc123",
+            "keys": {
+              "auth": "tBHI...",
+              "p256dh": "BKd3bo..."
+            }
+          },
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "inserted_at": "2025-01-15T12:00:00Z",
+          "last_used_at": "2025-01-15T14:23:00Z",
+          "name": "My Phone",
+          "updated_at": "2025-01-15T12:00:00Z",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        },
+        "properties": {
+          "active": {
+            "description": "Whether device is enabled",
+            "example": true,
+            "type": "boolean"
+          },
+          "channel": {
+            "description": "Notification channel type",
+            "enum": [
+              "web_push",
+              "email",
+              "sms",
+              "webhook"
+            ],
+            "example": "web_push",
+            "type": "string"
+          },
+          "config": {
+            "description": "Channel-specific configuration",
+            "example": {
+              "endpoint": "https://fcm.googleapis.com/fcm/send/abc123",
+              "keys": {
+                "auth": "tBHI...",
+                "p256dh": "BKd3bo..."
+              }
+            },
+            "type": "object"
+          },
+          "id": {
+            "description": "Unique identifier",
+            "format": "uuid",
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "last_used_at": {
+            "description": "Last time device was used",
+            "example": "2025-01-15T14:23:00Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "description": "Human-readable name",
+            "example": "My Phone",
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Last update timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "user_agent": {
+            "description": "User agent string",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "channel",
+          "active",
+          "config"
+        ],
+        "title": "NotificationDevice",
+        "type": "object"
+      },
+      "NotificationDeviceListResponse": {
+        "description": "Response containing a list of notification devices",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationDevice"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "NotificationDeviceListResponse",
+        "type": "object"
+      },
+      "NotificationDeviceRequest": {
+        "description": "Notification device creation/update request",
+        "example": {
+          "active": true,
+          "channel": "web_push",
+          "config": {
+            "endpoint": "https://fcm.googleapis.com/fcm/send/abc123",
+            "keys": {
+              "auth": "tBHI...",
+              "p256dh": "BKd3bo..."
+            }
+          },
+          "name": "My Phone",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        },
+        "properties": {
+          "active": {
+            "description": "Whether device is enabled",
+            "example": true,
+            "type": "boolean"
+          },
+          "channel": {
+            "description": "Notification channel type",
+            "enum": [
+              "web_push",
+              "email",
+              "sms",
+              "webhook"
+            ],
+            "example": "web_push",
+            "type": "string"
+          },
+          "config": {
+            "description": "Channel-specific configuration (varies by channel type)",
+            "oneOf": [
+              {
+                "properties": {
+                  "endpoint": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "keys": {
+                    "properties": {
+                      "auth": {
+                        "type": "string"
+                      },
+                      "p256dh": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "p256dh",
+                      "auth"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "endpoint",
+                  "keys"
+                ],
+                "title": "WebPushConfig",
+                "type": "object"
+              },
+              {
+                "description": "Email is automatically set from user's registered email",
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  }
+                },
+                "title": "EmailConfig",
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "phone": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "phone"
+                ],
+                "title": "SMSConfig",
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "url": {
+                    "format": "uri",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url"
+                ],
+                "title": "WebhookConfig",
+                "type": "object"
+              }
+            ],
+            "type": "object"
+          },
+          "name": {
+            "description": "Device name",
+            "example": "My Phone",
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "user_agent": {
+            "description": "User agent string (optional)",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "channel",
+          "config"
+        ],
+        "title": "NotificationDeviceRequest",
+        "type": "object"
+      },
+      "NotificationDeviceResponse": {
+        "description": "Response containing a single notification device",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NotificationDevice"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "NotificationDeviceResponse",
+        "type": "object"
+      },
+      "SMSConfig": {
+        "properties": {
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone"
+        ],
+        "title": "SMSConfig",
+        "type": "object"
+      },
+      "UserFiresResponse": {
+        "description": "Response containing fire detections near user's monitored locations",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Fire"
+            },
+            "type": "array"
+          },
+          "meta": {
+            "properties": {
+              "count": {
+                "description": "Number of fires returned",
+                "type": "integer"
+              },
+              "hours": {
+                "description": "Time window in hours",
+                "type": "integer"
+              },
+              "monitored_locations": {
+                "description": "Number of monitored locations",
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "UserFiresResponse",
+        "type": "object"
+      },
+      "ValidationErrorResponse": {
+        "description": "Validation error response with field details",
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "example": "validation_error",
+                "type": "string"
+              },
+              "details": {
+                "description": "Field-specific validation errors",
+                "type": "object"
+              },
+              "message": {
+                "example": "Invalid request parameters",
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ValidationErrorResponse",
+        "type": "object"
+      },
+      "WebPushConfig": {
+        "properties": {
+          "endpoint": {
+            "format": "uri",
+            "type": "string"
+          },
+          "keys": {
+            "properties": {
+              "auth": {
+                "type": "string"
+              },
+              "p256dh": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "p256dh",
+              "auth"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "endpoint",
+          "keys"
+        ],
+        "title": "WebPushConfig",
+        "type": "object"
+      },
+      "Webhook": {
+        "description": "A webhook endpoint for receiving fire notifications",
+        "example": {
+          "active": true,
+          "created_at": "2025-01-15T12:00:00Z",
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "last_used_at": "2025-01-15T14:23:00Z",
+          "name": "My Webhook",
+          "url": "https://api.example.com/webhook"
+        },
+        "properties": {
+          "active": {
+            "description": "Whether webhook is enabled",
+            "example": true,
+            "type": "boolean"
+          },
+          "created_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier",
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_used_at": {
+            "description": "Last time webhook was used",
+            "example": "2025-01-15T14:23:00Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "description": "Human-readable name",
+            "example": "My Webhook",
+            "type": "string"
+          },
+          "url": {
+            "description": "Webhook endpoint URL",
+            "example": "https://api.example.com/webhook",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "active"
+        ],
+        "title": "Webhook",
+        "type": "object"
+      },
+      "WebhookConfig": {
+        "properties": {
+          "url": {
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "WebhookConfig",
+        "type": "object"
+      },
+      "WebhookListResponse": {
+        "description": "Response containing a list of webhooks",
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Webhook"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "WebhookListResponse",
+        "type": "object"
+      },
+      "WebhookRequest": {
+        "description": "Webhook creation/update request",
+        "example": {
+          "active": true,
+          "name": "My Webhook",
+          "url": "https://api.example.com/webhook"
+        },
+        "properties": {
+          "active": {
+            "description": "Whether webhook is enabled",
+            "example": true,
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Webhook name",
+            "example": "My Webhook",
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "url": {
+            "description": "Webhook endpoint URL",
+            "example": "https://api.example.com/webhook",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "url"
+        ],
+        "title": "WebhookRequest",
+        "type": "object"
+      },
+      "WebhookResponse": {
+        "description": "Response containing a single webhook",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Webhook"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "WebhookResponse",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "description": "API key authentication using Bearer token",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Global fire intelligence platform API\n\nAccess real-time fire detection data from NASA FIRMS satellites and manage\nyour monitored locations programmatically.\n\n## Authentication\n\nAll requests require an API key in the Authorization header:\n```\nAuthorization: Bearer fp_your_api_key_here\n```\n\nGet your API key from your FirePing dashboard.\n",
+    "title": "FirePing API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/fires/near": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns recent fire detections near specified latitude/longitude coordinates within a radius",
+        "operationId": "AppWeb.Api.FireController.near",
+        "parameters": [
+          {
+            "description": "Latitude (-90 to 90)",
+            "example": 40.7128,
+            "in": "query",
+            "name": "latitude",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Longitude (-180 to 180)",
+            "example": -74.006,
+            "in": "query",
+            "name": "longitude",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Search radius in meters (1000-50000)",
+            "example": 5000,
+            "in": "query",
+            "name": "radius",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Time window in hours (1-168)",
+            "example": 24,
+            "in": "query",
+            "name": "hours",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Maximum number of fires to return (1-1000)",
+            "example": 100,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NearbyFiresResponse"
+                }
+              }
+            },
+            "description": "Fires near coordinates"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid parameters"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get fires near coordinates",
+        "tags": [
+          "Fires"
+        ]
+      }
+    },
+    "/v1/fires/user": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns recent fire detections near all of the authenticated user's monitored locations",
+        "operationId": "AppWeb.Api.FireController.user_fires",
+        "parameters": [
+          {
+            "description": "Time window in hours (1-168)",
+            "example": 24,
+            "in": "query",
+            "name": "hours",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Maximum number of fires to return (1-1000)",
+            "example": 100,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserFiresResponse"
+                }
+              }
+            },
+            "description": "Fires near user locations"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get fires near user locations",
+        "tags": [
+          "Fires"
+        ]
+      }
+    },
+    "/v1/locations": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns all monitored locations for the authenticated user",
+        "operationId": "AppWeb.Api.LocationController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationListResponse"
+                }
+              }
+            },
+            "description": "Locations"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "List user locations",
+        "tags": [
+          "Locations"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Creates a new monitored location for the authenticated user",
+        "operationId": "AppWeb.Api.LocationController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationRequest"
+              }
+            }
+          },
+          "description": "Location",
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            },
+            "description": "Created location"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Create location",
+        "tags": [
+          "Locations"
+        ]
+      }
+    },
+    "/v1/locations/{id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "Deletes a specific location if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.LocationController.delete",
+        "parameters": [
+          {
+            "description": "Location ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Location deleted successfully"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Delete location",
+        "tags": [
+          "Locations"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "description": "Returns a specific location if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.LocationController.show",
+        "parameters": [
+          {
+            "description": "Location ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            },
+            "description": "Location"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Get location",
+        "tags": [
+          "Locations"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Updates a specific location if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.LocationController.update",
+        "parameters": [
+          {
+            "description": "Location ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationRequest"
+              }
+            }
+          },
+          "description": "Location",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationResponse"
+                }
+              }
+            },
+            "description": "Updated location"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Update location",
+        "tags": [
+          "Locations"
+        ]
+      }
+    },
+    "/v1/locations/{id}/fires": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns recent fire detections within the location's monitoring radius",
+        "operationId": "AppWeb.Api.LocationController.fires",
+        "parameters": [
+          {
+            "description": "Location ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Time window in hours (1-168)",
+            "example": 24,
+            "in": "query",
+            "name": "hours",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Maximum number of fires to return (1-1000)",
+            "example": 100,
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationFiresResponse"
+                }
+              }
+            },
+            "description": "Fires near location"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Get fires near location",
+        "tags": [
+          "Locations"
+        ]
+      }
+    },
+    "/v1/notification-devices": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns all notification devices for the authenticated user",
+        "operationId": "AppWeb.Api.NotificationDeviceController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceListResponse"
+                }
+              }
+            },
+            "description": "Notification devices"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "List notification devices",
+        "tags": [
+          "Notification Devices"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Creates a new notification device for the authenticated user",
+        "operationId": "AppWeb.Api.NotificationDeviceController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationDeviceRequest"
+              }
+            }
+          },
+          "description": "Notification Device",
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceResponse"
+                }
+              }
+            },
+            "description": "Created notification device"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Create notification device",
+        "tags": [
+          "Notification Devices"
+        ]
+      }
+    },
+    "/v1/notification-devices/{id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "Deletes a specific notification device if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.NotificationDeviceController.delete",
+        "parameters": [
+          {
+            "description": "Notification Device ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Notification device deleted successfully"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Delete notification device",
+        "tags": [
+          "Notification Devices"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "description": "Returns a specific notification device if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.NotificationDeviceController.show",
+        "parameters": [
+          {
+            "description": "Notification Device ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceResponse"
+                }
+              }
+            },
+            "description": "Notification device"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Get notification device",
+        "tags": [
+          "Notification Devices"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Updates a specific notification device if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.NotificationDeviceController.update",
+        "parameters": [
+          {
+            "description": "Notification Device ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationDeviceRequest"
+              }
+            }
+          },
+          "description": "Notification Device",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceResponse"
+                }
+              }
+            },
+            "description": "Updated notification device"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Update notification device",
+        "tags": [
+          "Notification Devices"
+        ]
+      }
+    },
+    "/v1/webhooks": {
+      "get": {
+        "callbacks": {},
+        "description": "Returns all webhooks for the authenticated user",
+        "operationId": "AppWeb.Api.WebhookController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookListResponse"
+                }
+              }
+            },
+            "description": "Webhooks"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "List user webhooks",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Creates a new webhook for the authenticated user",
+        "operationId": "AppWeb.Api.WebhookController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookRequest"
+              }
+            }
+          },
+          "description": "Webhook",
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponse"
+                }
+              }
+            },
+            "description": "Created webhook"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Create webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/v1/webhooks/{id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "Deletes a specific webhook if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.WebhookController.delete",
+        "parameters": [
+          {
+            "description": "Webhook ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Webhook deleted successfully"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Delete webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "description": "Returns a specific webhook if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.WebhookController.show",
+        "parameters": [
+          {
+            "description": "Webhook ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponse"
+                }
+              }
+            },
+            "description": "Webhook"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          }
+        },
+        "summary": "Get webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Updates a specific webhook if it belongs to the authenticated user",
+        "operationId": "AppWeb.Api.WebhookController.update",
+        "parameters": [
+          {
+            "description": "Webhook ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookRequest"
+              }
+            }
+          },
+          "description": "Webhook",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponse"
+                }
+              }
+            },
+            "description": "Updated webhook"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "Validation error"
+          }
+        },
+        "summary": "Update webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://fireping.net/api",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "description": "Manage your monitored locations",
+      "name": "Locations"
+    },
+    {
+      "description": "Access fire detection data",
+      "name": "Fires"
+    },
+    {
+      "description": "Manage webhook endpoints for notifications",
+      "name": "Webhooks"
+    },
+    {
+      "description": "Manage notification devices for receiving fire alerts",
+      "name": "Notification Devices"
+    }
+  ]
+}
