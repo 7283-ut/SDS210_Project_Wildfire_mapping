@@ -48,7 +48,7 @@ Source: https://leaflet-extras.github.io/leaflet-providers/preview/
 
 A dark basemap was chosen because it improves contrast and visibility for dense wildfire detections and FRP color gradients.
 
-##Data Storage:
+## Data Storage:
 Wildfire detections retrieved from the API are converted into CSV files and stored locally in:
 data/processed/
 
