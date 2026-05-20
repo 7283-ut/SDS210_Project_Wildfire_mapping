@@ -66,7 +66,7 @@ The repository currently contains wildfire datasets collected on:
 - Requests
 - Jupyter Notebook / VS Code
 
-## Setup Instructions: Exactly what software and libraries are required to run the code (e.g., pointing to an environment.yml or requirements.txt file).
+## Setup Instructions
 This project requires a specific spatial software stack. To recreate the environment:
 1. Ensure you have Conda installed.
 2. Run: `conda env create -f environment.yml`
