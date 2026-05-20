@@ -70,5 +70,11 @@ The repository currently contains wildfire datasets collected on:
 This project requires a specific spatial software stack. To recreate the environment:
 1. Ensure you have Conda installed.
 2. Run: `conda env create -f environment.yml`
+3. Activate: `conda activate wildfire-mapping`
+4. Open the project in VS Code
+5. Open and run: `Notebooks/Project_SDS210.ipynb` from top to bottom
+6. To retrieve live wildfire data, create a free account on:
+   https://fireping.net/
+   Generate a personal API key and insert it into the notebook where indicated.
 
 
